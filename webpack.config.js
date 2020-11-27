@@ -1,32 +1,48 @@
-const path = require("path");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const HTMLWebpackPlugin = require("html-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const path = require('path');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const isProd = process.env.NODE_ENV === "production";
+const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
 
-const filename = (ext) =>
-  isDev ? `bundle.${ext}` : `bundle.[fullhash].${ext}`;
+const filename = (ext) => (isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`);
+
+const jsLoaders = () => {
+  const loaders = [
+    {
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env'],
+      },
+    },
+  ];
+
+  if (isDev) {
+    loaders.push('eslint-loader');
+  }
+
+  return loaders;
+};
 
 module.exports = {
-  context: path.resolve(__dirname, "src"),
-  mode: "development",
-  entry: ["@babel/polyfill","./index.js"],
+  context: path.resolve(__dirname, 'src'),
+  mode: 'development',
+  entry: ['@babel/polyfill', './index.js'],
   output: {
-    filename: filename("js"),
-    path: path.resolve(__dirname, "dist"),
+    filename: filename('js'),
+    path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
-    extensions: [".js"],
+    extensions: ['.js'],
     alias: {
-      "@": path.resolve(__dirname, "src"),
-      "@scss": path.resolve(__dirname, "src/scss"),
-      "@core": path.resolve(__dirname, "src/core"),
+      '@': path.resolve(__dirname, 'src'),
+      '@scss': path.resolve(__dirname, 'src/scss'),
+      '@core': path.resolve(__dirname, 'src/core'),
     },
   },
-  devtool: isDev ? "source-map" : false,
+  devtool: isDev ? 'source-map' : false,
   devServer: {
     port: 4000,
     hot: isDev,
@@ -34,34 +50,29 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HTMLWebpackPlugin({
-      template: "index.html",
-      minify: { removeComments: true, collapseWhitespace: true },
+      template: 'index.html',
+      minify: {removeComments: true, collapseWhitespace: true},
     }),
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, "src/favicon.ico"),
-          to: "favicon.ico",
+          from: path.resolve(__dirname, 'src/favicon.ico'),
+          to: 'favicon.ico',
         },
       ],
     }),
-    new MiniCssExtractPlugin({ filename: filename("css") }),
+    new MiniCssExtractPlugin({filename: filename('css')}),
   ],
   module: {
     rules: [
       {
         test: /\.s[ac]ss$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
         test: /\.m?js$/,
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env"],
-          },
-        },
+        use: jsLoaders(),
       },
     ],
   },
