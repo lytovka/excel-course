@@ -7,10 +7,17 @@ class Dom {
   html(html) {
     if (typeof html === 'string') {
       this.$el.innerHTML = html
-      console.log('html', this)
       return this
     }
     return this.$el.outerHTML.trim()
+  }
+
+  on(eventType, callback) {
+    this.$el.addEventListener(eventType, callback)
+  }
+
+  off(eventType, callback) {
+    this.$el.removeEventListener(eventType, callback)
   }
 
   clear() {
