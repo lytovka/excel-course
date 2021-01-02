@@ -7,25 +7,24 @@ export class DomListener {
     }
     this.$root = $root
     this.listeners = listeners
-    this.activeListeners = []
   }
 
   initDomListeners() {
     this.listeners.forEach((listener) => {
-      const callbackName = getMethodName(listener)
-      if (!this[callbackName]) {
-        throw new Error(`Method ${callbackName} is not implemented in ${this.name} Component`)
+      const methodName = getMethodName(listener)
+      if (!this[methodName]) {
+        throw new Error(`Method ${methodName} is not implemented in ${this.name} Component`)
       }
-      const boundListener = this[callbackName].bind(this)
-      this.activeListeners.push({type: callbackName, listener: boundListener})
-      this.$root.on(listener, boundListener)
+      this[methodName] = this[methodName].bind(this)
+      console.log('boundListener', this[methodName])
+      this.$root.on(listener, this[methodName])
     })
   }
 
   removeDomListeners() {
-    this.activeListeners.forEach((activeListener) => {
-      const {type, listener} = activeListener
-      this.$root.off(type, listener)
+    this.listeners.forEach((listener) => {
+      const methodName = getMethodName(listener)
+      this.$root.off(listener, this[methodName])
     })
   }
 }

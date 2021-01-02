@@ -9,6 +9,8 @@
   "rules": {
     "semi":"off",
     "require-jsdoc":"off",
-    "max-len":"off"
+    "max-len":"off",
+    "no-debugger": "warn",
+    "no-unused-vars": "off"
   }
 }
