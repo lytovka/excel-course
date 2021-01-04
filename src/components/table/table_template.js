@@ -15,7 +15,10 @@ function createCell() {
 
 function createAlphabeticalAxis(colContent) {
   return `
-    <div class="column">${colContent}</div>
+    <div class="column">
+        ${colContent}
+        <div class="col-resize"></div>
+    </div>
     `
 }
 
@@ -29,9 +32,13 @@ function createNumericalAxis(rowContent) {
 }
 
 function createRow(rowContent, index) {
+  const resizeElem = index === 1 ? '' : '<div class="row-resize"></div>'
   return `
       <div class="row">
-          <div class="row-info">${index}</div>
+          <div class="row-info">
+           ${index}
+           ${resizeElem}
+          </div>
           <div class="row-data">${rowContent}</div>
       </div>
       `
