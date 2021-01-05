@@ -10,6 +10,7 @@ export class ExcelComponent extends DomListener {
   }
 
   init() {
+    console.log(this.$root)
     this.initDomListeners()
   }
 
