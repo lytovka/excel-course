@@ -1,6 +1,6 @@
 class Dom {
-  constructor($rootElement) {
-    this.$rootElement = document.createElement($rootElement)
+  constructor(selector) {
+    this.$rootElement = typeof selector === 'string' ? document.querySelector(selector) : selector
   }
 
   setInnerHTML(html) {
@@ -14,11 +14,31 @@ class Dom {
     this.$rootElement.innerHTML = ''
     return this
   }
+
+  append(element) {
+    if (element instanceof Dom) {
+      element = element.$rootElement
+    }
+    if (Element.prototype.append) {
+      this.$rootElement.append(element)
+    } else {
+      this.$rootElement.appendChild(element)
+    }
+    return this
+  }
+
+  on(type, callback) {
+    this.$rootElement.addEventListener(type, callback)
+  }
+
+  off(type, callback) {
+    this.$rootElement.removeEventListener(type, callback)
+  }
 }
 
 
-export function $($rootElement) {
-  return new Dom($rootElement)
+export function $(selector) {
+  return new Dom(selector)
 }
 
 $.createElement = (tagName, classes) => {
@@ -26,5 +46,5 @@ $.createElement = (tagName, classes) => {
   if (classes) {
     newElement.classList.add(classes)
   }
-  return newElement
+  return $(newElement)
 }
