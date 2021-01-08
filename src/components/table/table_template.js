@@ -7,22 +7,22 @@ function toChar(_el, index) {
   return String.fromCharCode(CODES.A + index)
 }
 
-function createCell() {
+function createCell(_, index) {
   return `
-    <div class="cell" contenteditable></div>
+    <div class="cell" contenteditable data-col="${index}"></div>
     `
 }
 
-function createAlphabeticalAxis(colContent) {
+function createAlphabeticalAxis(colContent, index) {
   return `
-    <div class="column">
+    <div class="column" data-type="resizable" data-col="${index}">
         ${colContent}
-        <div class="col-resize"></div>
+        <div class="col-resize" data-resize="col"></div>
     </div>
     `
 }
 
-function createNumericalAxis(rowContent) {
+function createRow(rowContent) {
   return `
     <div class="row">
         <div class="row-info"></div>
@@ -31,12 +31,11 @@ function createNumericalAxis(rowContent) {
     `
 }
 
-function createRow(rowContent, index) {
-  const resizeElem = index === 1 ? '' : '<div class="row-resize"></div>'
+function createNumericalAxis(rowContent, index) {
+  const resizeElem = '<div class="row-resize" data-resize="row"></div>'
   return `
-      <div class="row">
-          <div class="row-info">
-           ${index}
+      <div class="row" data-type="resizable" data-row="${index}">
+          <div class="row-info">${index}
            ${resizeElem}
           </div>
           <div class="row-data">${rowContent}</div>
@@ -52,12 +51,12 @@ export function createTable(rowsLimit = 35) {
       .map(createAlphabeticalAxis)
       .join('')
 
-  rows.push(createNumericalAxis(cols))
+  rows.push(createRow(cols))
 
   for (let i = 0; i < rowsLimit; i++) {
     const cells = Array.from({length: COLS_COUNT}, createCell)
         .join('')
-    rows.push(createRow(cells, i + 1))
+    rows.push(createNumericalAxis(cells, i + 1))
   }
   return rows.join('')
 }
